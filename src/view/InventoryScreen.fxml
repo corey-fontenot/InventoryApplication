@@ -38,7 +38,7 @@
             </Label>
             <HBox alignment="TOP_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1">
                <children>
-                  <TextField />
+                  <TextField fx:id="partSearchField" />
                   <Button fx:id="searchPartButton" mnemonicParsing="false" onAction="#handleSearchPartButtonClick" prefWidth="100.0" text="Search">
                      <HBox.margin>
                         <Insets bottom="15.0" />
@@ -84,7 +84,7 @@
             </Label>
             <HBox alignment="TOP_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1">
                <children>
-                  <TextField />
+                  <TextField fx:id="productSearchField" />
                   <Button fx:id="searchProductButton" mnemonicParsing="false" onAction="#handleSearchProductButtonClick" prefWidth="100.0" text="Search">
                      <HBox.margin>
                         <Insets bottom="15.0" />

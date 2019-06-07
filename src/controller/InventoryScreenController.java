@@ -5,16 +5,23 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.Inventory;
 import model.Part;
 import model.Product;
@@ -38,6 +45,10 @@ public class InventoryScreenController implements Initializable {
     @FXML private Button deleteProductButton;
     @FXML private Button searchProductButton;
     
+    // Text fields
+    @FXML private TextField partSearchField;
+    @FXML private TextField productSearchField;
+    
     // Parts TableView and Columns
     @FXML private TableView partsTable;
     @FXML private TableColumn<Part, Integer> partIdCol;
@@ -54,7 +65,7 @@ public class InventoryScreenController implements Initializable {
     
     // Button handlers
     @FXML
-    private void handleExitButtonClick(ActionEvent event) {
+    private void handleExitButtonClick(ActionEvent event) throws IOException {
         Platform.exit();
     }
     
@@ -75,7 +86,17 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleSearchPartButtonClick(ActionEvent event) {
-        System.out.println("Search Part Button Clicked");
+        String searchText = partSearchField.getText();
+        ObservableList<Part> results;
+        
+        try {
+            results = inventory.lookupPart(Integer.parseInt(searchText));
+        } catch(NumberFormatException e) {
+            results = inventory.lookupPart(searchText);
+        }
+        
+        //Populate Parts table with the results
+        partsTable.setItems(results);
     }
     
     @FXML
