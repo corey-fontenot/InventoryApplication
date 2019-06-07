@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -70,8 +71,18 @@ public class InventoryScreenController implements Initializable {
     }
     
     @FXML
-    private void handleAddPartButtonClick(ActionEvent event) {
-        System.out.println("Add Part Button Clicked");
+    private void handleAddPartButtonClick(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/AddPartScreen.fxml"));
+        loader.load();
+        
+        AddPartScreenController addPartController = loader.getController();
+        addPartController.setData(inventory);
+        
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Parent scene = loader.getRoot();
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
     
     @FXML
@@ -100,8 +111,8 @@ public class InventoryScreenController implements Initializable {
     }
     
     @FXML
-    private void handleAddProductButtonClick(ActionEvent event) {
-        System.out.println("Add Product Button Clicked");
+    private void handleAddProductButtonClick(ActionEvent event) throws IOException{
+        
     }
     
     @FXML
