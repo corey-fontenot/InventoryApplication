@@ -116,7 +116,17 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleSearchProductButtonClick(ActionEvent event) {
-        System.out.println("Search Product Button Clicked");
+        String searchText = productSearchField.getText();
+        ObservableList<Product> results;
+        
+        try {
+            results = inventory.lookupProduct(Integer.parseInt(searchText));
+        } catch(NumberFormatException e) {
+            results = inventory.lookupProduct(searchText);
+        }
+        
+        //Populate Product table with the results
+        productsTable.setItems(results);
     }
     
     public void setData(Inventory inventory) {
