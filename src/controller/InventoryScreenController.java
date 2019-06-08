@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -92,7 +93,16 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleDeletePartButtonClick(ActionEvent event) {
-        System.out.println("Delete Part Button Clicked");
+        Part temp = (Part) partsTable.getSelectionModel().getSelectedItem();
+        
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Delete");
+        confirmDialog.setContentText(
+            "Are you sure you want to permanently delete \"" + temp.getName() + 
+             "\" from Inventory? This action cannot be undone");
+        confirmDialog.showAndWait();
+        
+        inventory.deletePart(temp);
     }
     
     @FXML
@@ -122,7 +132,7 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleDeleteProductButtonClick(ActionEvent event) {
-        System.out.println("Delete Product Button Clicked");
+        
     }
     
     @FXML
