@@ -87,8 +87,29 @@ public class InventoryScreenController implements Initializable {
     }
     
     @FXML
-    private void handleModifyPartButtonClick(ActionEvent event) {
-        System.out.println("Modify Part Button Clicked");
+    private void handleModifyPartButtonClick(ActionEvent event) throws IOException{
+        try {
+            if(partsTable.getSelectionModel().isEmpty()) {
+                throw new IllegalArgumentException("You must select a part to do that!");
+            }
+            
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/ModifyPartScreen.fxml"));
+            loader.load();
+
+            ModifyPartScreenController modifyPartController = loader.getController();
+            modifyPartController.setData(inventory, (Part) partsTable.getSelectionModel().getSelectedItem());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+        } catch(IllegalArgumentException e) {
+            Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
+            infoDialog.setTitle("Error");
+            infoDialog.setContentText(e.getMessage());
+            infoDialog.showAndWait();
+        }
     }
     
     @FXML

@@ -101,6 +101,18 @@ public class Inventory {
     }
     
     /**
+     *  Return index of specified part
+     * @param part: Part whose index is to be returned
+     * @return index of specified part
+     */
+    public int indexOfPart(Part part) {
+        if(allParts.contains(part)) {
+            return allParts.indexOf(part);
+        }
+        return -1;
+    }
+    
+    /**
      *  Update part at specified index in allParts list
      *  @param index: index of part to replace
      *  @param part: new part replacing old part in list
@@ -109,6 +121,18 @@ public class Inventory {
         if(index < allParts.size()) {
             allParts.set(index, part);
         } 
+    }
+    
+    /**
+     *  Returns index of specified product
+     *  @param product product whose index will be returned
+     *  @return index of specified product
+     */
+    public int indexOfProduct(Product product) {
+        if(allProducts.contains(product)) {
+            return allProducts.indexOf(product);
+        }
+        return -1;
     }
     
     /**
