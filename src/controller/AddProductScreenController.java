@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +38,7 @@ import model.Part;
 public class AddProductScreenController implements Initializable {
     
     Inventory inventory;
+    ObservableList<Part> associatedParts;
 
     // Labels
     @FXML private Label productIDLabel;
@@ -87,6 +90,20 @@ public class AddProductScreenController implements Initializable {
 
     @FXML
     private void handleAddBtnClick(ActionEvent event) throws IOException {
+        try {
+            if(allPartsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a part to do that!");
+            }
+            
+            Part selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
+            associatedParts.add(selectedPart);
+            
+        } catch(NullPointerException e) {
+            Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
+            infoDialog.setTitle("No part selected");
+            infoDialog.setContentText(e.getMessage());
+            infoDialog.showAndWait();
+        }
     }
 
     @FXML
@@ -124,11 +141,21 @@ public class AddProductScreenController implements Initializable {
     public void setData(Inventory inventory) {
         this.inventory = inventory;
         
+        this.associatedParts = FXCollections.observableArrayList();
+        
+        // Set up "All Parts" table
         allPartsTable.setItems(inventory.getAllParts());
         allPartsIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         allPartsNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         allPartsStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         allPartsPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        // Set up "Associated Parts" table
+        associatedPartsTable.setItems(this.associatedParts);
+        associatedPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        associatedPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        associatedPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        associatedPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
     
 }

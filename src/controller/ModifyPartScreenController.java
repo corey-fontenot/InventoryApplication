@@ -40,34 +40,27 @@ public class ModifyPartScreenController implements Initializable {
     private Inventory inventory;
     private Part part;
 
-    @FXML
-    private RadioButton inHouseRadio;
-    @FXML
-    private ToggleGroup productionToggle;
-    @FXML
-    private RadioButton outsourcedRadio;
-    @FXML
-    private Label machineLabel;
-    @FXML
-    private TextField partIdField;
-    @FXML
-    private TextField partNameField;
-    @FXML
-    private TextField partStockField;
-    @FXML
-    private TextField partPriceField;
-    @FXML
-    private TextField partMaxField;
-    @FXML
-    private TextField partProductionField;
-    @FXML
-    private TextField partMinField;
-    @FXML
-    private Label companyLabel;
-    @FXML
-    private Button saveButton;
-    @FXML
-    private Button cancelButton;
+    // Radio Buttons and Toggle Groups
+    @FXML private RadioButton inHouseRadio;
+    @FXML private RadioButton outsourcedRadio;
+    @FXML private ToggleGroup productionToggle;
+    
+    // Labels
+    @FXML private Label machineLabel;
+    @FXML private Label companyLabel;
+    
+    // Text Fields
+    @FXML private TextField partIdField;
+    @FXML private TextField partNameField;
+    @FXML private TextField partStockField;
+    @FXML private TextField partPriceField;
+    @FXML private TextField partMaxField;
+    @FXML private TextField partProductionField;
+    @FXML private TextField partMinField;
+    
+    // Buttons
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
 
     /**
      * Initializes the controller class.
