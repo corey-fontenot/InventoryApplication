@@ -180,7 +180,7 @@ public class ModifyPartScreenController implements Initializable {
 
     @FXML
     private void handleCancelButtonClick(ActionEvent event) throws IOException {
-         Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmDialog.setTitle("Confirmation");
         confirmDialog.setContentText(
             "Are you sure you want to Cancel? All progress will be lost");

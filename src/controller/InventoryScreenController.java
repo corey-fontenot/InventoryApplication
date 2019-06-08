@@ -163,7 +163,20 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleDeleteProductButtonClick(ActionEvent event) {
-        
+        try {
+            if(productsTable.getSelectionModel().isEmpty()) {
+                throw new IllegalArgumentException("You must select a product to do that!");
+            } 
+            
+            Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
+            inventory.deleteProduct(selectedProduct);
+            
+        } catch(IllegalArgumentException e) {
+            Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
+            infoDialog.setTitle("Error");
+            infoDialog.setContentText(e.getMessage());
+            infoDialog.showAndWait();
+        }
     }
     
     @FXML
