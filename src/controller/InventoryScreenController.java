@@ -166,9 +166,17 @@ public class InventoryScreenController implements Initializable {
         try {
             if(productsTable.getSelectionModel().isEmpty()) {
                 throw new IllegalArgumentException("You must select a product to do that!");
-            } 
+            }
             
             Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
+            
+            Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmDialog.setTitle("Confirm Delete");
+            confirmDialog.setContentText(
+                "Are you sure you want to permanently delete \"" + selectedProduct.getName() + 
+                "\" from Inventory? This action cannot be undone");
+            confirmDialog.showAndWait();
+            
             inventory.deleteProduct(selectedProduct);
             
         } catch(IllegalArgumentException e) {
