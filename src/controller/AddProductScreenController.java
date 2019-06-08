@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
 import model.Part;
@@ -122,6 +123,12 @@ public class AddProductScreenController implements Initializable {
     
     public void setData(Inventory inventory) {
         this.inventory = inventory;
+        
+        allPartsTable.setItems(inventory.getAllParts());
+        allPartsIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        allPartsNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        allPartsStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        allPartsPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
     
 }
