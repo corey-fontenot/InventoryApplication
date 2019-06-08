@@ -5,6 +5,7 @@
  */
 package controller;
 
+import exceptions.IncorrectValueException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -80,6 +81,7 @@ public class ModifyPartScreenController implements Initializable {
         this.inventory = inventory;
         this.part = part;
         
+        partIdField.setText(Integer.toString(part.getId()));
         partNameField.setText(part.getName());
         partStockField.setText(Integer.toString(part.getStock()));
         partPriceField.setText(Double.toString(part.getPrice()));
@@ -110,26 +112,35 @@ public class ModifyPartScreenController implements Initializable {
 
     @FXML
     private void handleSaveBtnClick(ActionEvent event) throws IOException {
-        int stock, min, max, machineId;
+        int id, stock, min, max, machineId;
         double price;
         String name, companyName;
         
         try {
+            id = Integer.parseInt(partIdField.getText());
             name = partNameField.getText();
             stock = Integer.parseInt(partStockField.getText());
             price = Double.parseDouble(partPriceField.getText());
             min = Integer.parseInt(partMinField.getText());
             max = Integer.parseInt(partMaxField.getText());
             
+            if(max < min) {
+                throw new IncorrectValueException("Max cannot be less than Min");
+            }
+            
+            if(stock < min || stock > max) {
+                throw new IncorrectValueException("Stock must be between Min and Max");
+            }
+            
             if(inHouseRadio.isSelected()) {
                 machineId = Integer.parseInt(partProductionField.getText());
-                InHouse updatedPart = new InHouse(this.part.getId(), name, price, stock, min, max, machineId);
+                InHouse updatedPart = new InHouse(id, name, price, stock, min, max, machineId);
                 if(inventory.indexOfPart(this.part) >= 0) {
                     inventory.updatePart(inventory.indexOfPart(this.part), updatedPart);
                 }
             } else {
                 companyName = partProductionField.getText();
-                Outsourced updatedPart = new Outsourced(this.part.getId(), name, price, stock, min, max, companyName);
+                Outsourced updatedPart = new Outsourced(id, name, price, stock, min, max, companyName);
                 if(inventory.indexOfPart(this.part) >= 0) {
                     inventory.updatePart(inventory.indexOfPart(this.part), updatedPart);
                 }
@@ -159,6 +170,11 @@ public class ModifyPartScreenController implements Initializable {
             errorDialog.setContentText(
                 "You must enter valid values in all fields");
             errorDialog.showAndWait();
+        } catch(IncorrectValueException e) {
+            Alert errorDialog = new Alert(Alert.AlertType.ERROR);
+            errorDialog.setTitle("Error");
+            errorDialog.setContentText(e.getMessage());
+            errorDialog.showAndWait();
         }
     }
 
@@ -185,5 +201,4 @@ public class ModifyPartScreenController implements Initializable {
             stage.show();
         }
     }
-    
 }

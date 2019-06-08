@@ -5,6 +5,7 @@
  */
 package controller;
 
+import exceptions.IncorrectValueException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -124,10 +125,11 @@ public class AddPartScreenController implements Initializable {
             name = partNameField.getText();
             
             if(max < min) {
-                throw new NumberFormatException("Max cannot be less than Min");
+                throw new IncorrectValueException("Max cannot be less than Min");
             }
+            
             if(stock < min | stock > max) {
-                throw new NumberFormatException("Stock must be between Min and Max");
+                throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
             if(inHouseRadio.isSelected()) {
@@ -163,6 +165,11 @@ public class AddPartScreenController implements Initializable {
             errorDialog.setTitle("Error");
             errorDialog.setContentText(
                 "You must enter valid values in all fields");
+            errorDialog.showAndWait();
+        } catch(IncorrectValueException e) {
+            Alert errorDialog = new Alert(Alert.AlertType.ERROR);
+            errorDialog.setTitle("Error");
+            errorDialog.setContentText(e.getMessage());
             errorDialog.showAndWait();
         }
     }
