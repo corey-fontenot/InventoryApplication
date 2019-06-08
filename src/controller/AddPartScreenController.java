@@ -21,9 +21,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
+import model.InHouse;
 import model.Inventory;
+import model.Outsourced;
+import model.Part;
 
 /**
  * FXML Controller class
@@ -41,10 +45,20 @@ public class AddPartScreenController implements Initializable {
     
     // Buttons
     @FXML private Button cancelButton;
+    @FXML private Button saveButton;
     
     // Labels
     @FXML private Label machineLabel;
     @FXML private Label companyLabel;
+    
+    // Text Fields
+    @FXML private TextField partIdField;
+    @FXML private TextField partNameField;
+    @FXML private TextField partStockField;
+    @FXML private TextField partPriceField;
+    @FXML private TextField partMaxField;
+    @FXML private TextField partMinField;
+    @FXML private TextField partProductionField;
 
     /**
      * Initializes the controller class.
@@ -79,6 +93,65 @@ public class AddPartScreenController implements Initializable {
             Parent scene = loader.getRoot();
             stage.setScene(new Scene(scene));
             stage.show();
+        }
+    }
+    
+    @FXML
+    private void handleSaveBtnClick(ActionEvent event) throws IOException {
+        int id, stock, min, max, machineId;
+        double price;
+        String name;
+        String companyName;
+        
+        try {
+            id = Integer.valueOf(partIdField.getText());
+            stock = Integer.valueOf(partStockField.getText());
+            min = Integer.valueOf(partMinField.getText());
+            max = Integer.valueOf(partMaxField.getText());
+            price = Double.valueOf(partPriceField.getText());
+            name = partNameField.getText();
+            
+            if(max < min) {
+                throw new NumberFormatException("Max cannot be less than Min");
+            }
+            if(stock < min | stock > max) {
+                throw new NumberFormatException("Stock must be between Min and Max");
+            }
+            
+            if(inHouseRadio.isSelected()) {
+                machineId = Integer.valueOf(partProductionField.getText());
+                
+                inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
+            }else {
+                companyName = partProductionField.getText();
+                inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
+            }
+            
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
+            loader.load();
+            
+            InventoryScreenController inventoryController = loader.getController();
+            inventoryController.setData(inventory);
+            
+            Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
+            infoDialog.setTitle("Part Saved");
+            infoDialog.setContentText(
+                name + " was successfully saved");
+            infoDialog.showAndWait();
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.setTitle("Inventory Management System");
+            stage.setResizable(false);
+            stage.show();
+        } catch(NumberFormatException | NullPointerException e) {
+            Alert errorDialog = new Alert(Alert.AlertType.ERROR);
+            errorDialog.setTitle("Error");
+            errorDialog.setContentText(
+                "You must enter valid values in all fields");
+            errorDialog.showAndWait();
         }
     }
     
