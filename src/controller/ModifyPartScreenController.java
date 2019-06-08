@@ -149,7 +149,7 @@ public class ModifyPartScreenController implements Initializable {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Part Saved");
             infoDialog.setContentText(
-                name + " was successfully saved");
+                "\"" + name + "\" was successfully saved");
             infoDialog.showAndWait();
             
             FXMLLoader loader = new FXMLLoader();

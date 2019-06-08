@@ -151,7 +151,7 @@ public class AddPartScreenController implements Initializable {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Part Saved");
             infoDialog.setContentText(
-                name + " was successfully saved");
+                "\"" + name + "\" was successfully saved");
             infoDialog.showAndWait();
             
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
