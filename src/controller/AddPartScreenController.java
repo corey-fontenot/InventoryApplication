@@ -71,6 +71,18 @@ public class AddPartScreenController implements Initializable {
     public void setData(Inventory inventory) {
         this.inventory = inventory;
     }
+    
+    private int nextPartId() {
+        int max = 0;
+        
+        for(Part part : inventory.getAllParts()) {
+            if(part.getId() > max) {
+                max = part.getId();
+            }
+        }
+        
+        return max + 1;
+    }
 
     @FXML
     private void handleCancelButtonClick(ActionEvent event) throws IOException{
@@ -104,7 +116,7 @@ public class AddPartScreenController implements Initializable {
         String companyName;
         
         try {
-            id = Integer.valueOf(partIdField.getText());
+            id = nextPartId();
             stock = Integer.valueOf(partStockField.getText());
             min = Integer.valueOf(partMinField.getText());
             max = Integer.valueOf(partMaxField.getText());
@@ -160,9 +172,11 @@ public class AddPartScreenController implements Initializable {
         if(inHouseRadio.isSelected()) {
             companyLabel.setVisible(false);
             machineLabel.setVisible(true);
+            partProductionField.setPromptText("Machine ID");
         } else {
             machineLabel.setVisible(false);
             companyLabel.setVisible(true);
+            partProductionField.setPromptText("Company Name");
         }
     }
     

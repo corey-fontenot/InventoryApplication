@@ -9,7 +9,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddPartScreenController">
    <children>
-      <Label layoutX="14.0" layoutY="14.0" text="Add Part">
+      <Label layoutX="14.0" layoutY="14.0" text="Modify Part">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -66,18 +66,18 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="partIdField" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-            <TextField fx:id="partNameField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <TextField fx:id="partStockField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-            <TextField fx:id="partPriceField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-            <TextField fx:id="partMaxField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="partProductionField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+            <TextField fx:id="partIdField" disable="true" promptText="Auto Gen - Disabled" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+            <TextField fx:id="partNameField" promptText="Part Name" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <TextField fx:id="partStockField" promptText="Amount In Stock" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TextField fx:id="partPriceField" promptText="Price/Cost" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <TextField fx:id="partMaxField" promptText="Max" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="partProductionField" promptText="Machine ID" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
             <Label contentDisplay="RIGHT" text="Min" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="partMinField" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <TextField fx:id="partMinField" promptText="Min" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <Label fx:id="companyLabel" text="Company Name" visible="false" GridPane.rowIndex="5">
                <font>
                   <Font size="20.0" />
