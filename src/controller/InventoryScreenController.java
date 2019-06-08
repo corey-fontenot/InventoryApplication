@@ -143,7 +143,17 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleAddProductButtonClick(ActionEvent event) throws IOException{
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/AddProductScreen.fxml"));
+        loader.load();
         
+        AddProductScreenController addProdController = loader.getController();
+        addProdController.setData(inventory);
+        
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Parent scene = loader.getRoot();
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
     
     @FXML
