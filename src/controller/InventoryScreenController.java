@@ -90,7 +90,7 @@ public class InventoryScreenController implements Initializable {
     private void handleModifyPartButtonClick(ActionEvent event) throws IOException{
         try {
             if(partsTable.getSelectionModel().isEmpty()) {
-                throw new IllegalArgumentException("You must select a part to do that!");
+                throw new NullPointerException("You must select a part to do that!");
             }
             
             FXMLLoader loader = new FXMLLoader();
@@ -104,7 +104,7 @@ public class InventoryScreenController implements Initializable {
             Parent scene = loader.getRoot();
             stage.setScene(new Scene(scene));
             stage.show();
-        } catch(IllegalArgumentException e) {
+        } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Error");
             infoDialog.setContentText(e.getMessage());
@@ -114,16 +114,27 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleDeletePartButtonClick(ActionEvent event) {
-        Part temp = (Part) partsTable.getSelectionModel().getSelectedItem();
-        
-        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmDialog.setTitle("Confirm Delete");
-        confirmDialog.setContentText(
-            "Are you sure you want to permanently delete \"" + temp.getName() + 
-             "\" from Inventory? This action cannot be undone");
-        confirmDialog.showAndWait();
-        
-        inventory.deletePart(temp);
+        try {
+            if(partsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a part to do that!");
+            }
+
+            Part temp = (Part) partsTable.getSelectionModel().getSelectedItem();
+
+            Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmDialog.setTitle("Confirm Delete");
+            confirmDialog.setContentText(
+                "Are you sure you want to permanently delete \"" + temp.getName() + 
+                 "\" from Inventory? This action cannot be undone");
+            confirmDialog.showAndWait();
+
+            inventory.deletePart(temp);
+        } catch(NullPointerException e) {
+            Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
+            infoDialog.setTitle("Error");
+            infoDialog.setContentText(e.getMessage());
+            infoDialog.showAndWait();
+        }
     }
     
     @FXML
@@ -165,7 +176,7 @@ public class InventoryScreenController implements Initializable {
     private void handleDeleteProductButtonClick(ActionEvent event) {
         try {
             if(productsTable.getSelectionModel().isEmpty()) {
-                throw new IllegalArgumentException("You must select a product to do that!");
+                throw new NullPointerException("You must select a product to do that!");
             }
             
             Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
@@ -179,7 +190,7 @@ public class InventoryScreenController implements Initializable {
             
             inventory.deleteProduct(selectedProduct);
             
-        } catch(IllegalArgumentException e) {
+        } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Error");
             infoDialog.setContentText(e.getMessage());
