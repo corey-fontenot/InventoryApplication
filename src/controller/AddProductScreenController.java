@@ -89,6 +89,16 @@ public class AddProductScreenController implements Initializable {
 
     @FXML
     private void handleSearchBtnClick(ActionEvent event) throws IOException {
+        String searchText = partSearchField.getText();
+        ObservableList<Part> results;
+        
+        try {
+            results = inventory.lookupPart(Integer.parseInt(searchText));
+        } catch(NumberFormatException e) {
+            results = inventory.lookupPart(searchText);
+        }
+        
+        allPartsTable.setItems(results);
     }
 
     @FXML
