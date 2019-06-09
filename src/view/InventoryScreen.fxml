@@ -59,9 +59,9 @@
             </TableView>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="addPartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddPartButtonClick" prefWidth="85.0" text="Add" />
-                  <Button fx:id="modifyPartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleModifyPartButtonClick" prefWidth="85.0" text="Modify" />
-                  <Button fx:id="deletePartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeletePartButtonClick" prefWidth="85.0" text="Delete" />
+                  <Button fx:id="addPartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddPartButtonClick" prefWidth="85.0" style="-fx-background-color: #2ad11a;" text="Add" />
+                  <Button fx:id="modifyPartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleModifyPartButtonClick" prefWidth="85.0" style="-fx-background-color: #38A1F3;" text="Modify" />
+                  <Button fx:id="deletePartButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeletePartButtonClick" prefWidth="85.0" style="-fx-background-color: #d11a2a;" text="Delete" textFill="WHITE" />
                </children>
                <padding>
                   <Insets top="10.0" />
@@ -105,9 +105,9 @@
             </TableView>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="addProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddProductButtonClick" prefWidth="85.0" text="Add" />
-                  <Button fx:id="modifyProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleModifyProductButtonClick" prefWidth="85.0" text="Modify" />
-                  <Button fx:id="deleteProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteProductButtonClick" prefWidth="85.0" text="Delete" />
+                  <Button fx:id="addProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddProductButtonClick" prefWidth="85.0" style="-fx-background-color: #2ad11a;" text="Add" />
+                  <Button fx:id="modifyProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleModifyProductButtonClick" prefWidth="85.0" style="-fx-background-color: #38A1F3;" text="Modify" />
+                  <Button fx:id="deleteProductButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteProductButtonClick" prefWidth="85.0" style="-fx-background-color: #d11a2a;" text="Delete" textFill="WHITE" />
                </children>
                <padding>
                   <Insets top="10.0" />

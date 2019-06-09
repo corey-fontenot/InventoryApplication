@@ -87,8 +87,8 @@
       </GridPane>
       <HBox layoutX="299.0" layoutY="482.0" prefHeight="68.0" prefWidth="294.0" spacing="25.0">
          <children>
-            <Button fx:id="saveButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleSaveBtnClick" prefWidth="100.0" text="Save" />
-            <Button fx:id="cancelButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefWidth="100.0" text="Cancel" />
+            <Button fx:id="saveButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleSaveBtnClick" prefWidth="100.0" style="-fx-background-color: #2ad11a;" text="Save" />
+            <Button fx:id="cancelButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefWidth="100.0" style="-fx-background-color: #d11a2a;" text="Cancel" textFill="WHITE" />
          </children>
       </HBox>
    </children>
