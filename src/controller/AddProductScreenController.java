@@ -5,6 +5,7 @@
  */
 package controller;
 
+import exceptions.IncorrectValueException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
 import model.Part;
+import model.Product;
 
 /**
  * FXML Controller class
@@ -52,6 +54,7 @@ public class AddProductScreenController implements Initializable {
     @FXML private TextField productNameField;
     @FXML private TextField productStockField;
     @FXML private TextField productPriceField;
+    @FXML private TextField productMinField;
     @FXML private TextField productMaxField;
     @FXML private TextField partSearchField;
     
@@ -108,10 +111,80 @@ public class AddProductScreenController implements Initializable {
 
     @FXML
     private void handleDeleteBtnClick(ActionEvent event) throws IOException {
+        try {
+            if(associatedPartsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a part to do that!");
+            }
+            
+            Part selectedPart = associatedPartsTable.getSelectionModel().getSelectedItem();
+            
+            associatedParts.remove(selectedPart);
+            
+        } catch(NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleSaveBtnClick(ActionEvent event) throws IOException {
+        int id, stock, min, max;
+        String name;
+        double price;
+        
+        try {
+            id = nextProductId();
+            name = productNameField.getText();
+            price = Double.parseDouble(productPriceField.getText());
+            stock = Integer.parseInt(productStockField.getText());
+            min = Integer.parseInt(productMinField.getText());
+            max = Integer.parseInt(productMaxField.getText());
+            
+            if(max < min) {
+                throw new IncorrectValueException("Max cannot be less than Min");
+            }
+            
+            if(stock < min || stock > max) {
+                throw new IncorrectValueException("Stock must be between Min and Max");
+            }
+            
+            Product addedProduct = new Product(id, name, price, stock, min, max);
+            
+            associatedPartsTable.getItems().forEach((part) -> {
+                addedProduct.addAssociatedPart(part);
+            });
+            
+            inventory.addProduct(addedProduct);
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Product Saved");
+            alert.setContentText("Product \"" + name + "\" was successfully saved.");
+            alert.showAndWait();
+            
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
+            loader.load();
+            
+            InventoryScreenController InventoryController = loader.getController();
+            InventoryController.setData(inventory);
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+            
+        } catch(NumberFormatException | NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("You must enter valid values in all fields");
+            alert.showAndWait();
+        } catch(IncorrectValueException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+        }
     }
 
     @FXML
@@ -156,6 +229,18 @@ public class AddProductScreenController implements Initializable {
         associatedPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         associatedPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         associatedPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+    }
+    
+    private int nextProductId() {
+        int max = 1;
+        
+        for(Product product : inventory.getAllProducts()) {
+            if(product.getId() > max) {
+                max = product.getId();
+            }
+        }
+        
+        return max + 1;
     }
     
 }

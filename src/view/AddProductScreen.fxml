@@ -49,7 +49,7 @@
             <Label fx:id="productMaxLabel" text="Max" GridPane.columnSpan="3" GridPane.rowIndex="4" />
             <TextField fx:id="productMaxField" promptText="Max" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="4" />
             <Label text="Min" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-            <TextField promptText="Min" GridPane.columnIndex="11" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+            <TextField fx:id="productMinField" promptText="Min" GridPane.columnIndex="11" GridPane.columnSpan="4" GridPane.rowIndex="4" />
          </children>
       </GridPane>
       <VBox alignment="CENTER_RIGHT" layoutX="450.0" layoutY="25.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
