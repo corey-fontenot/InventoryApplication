@@ -168,8 +168,33 @@ public class InventoryScreenController implements Initializable {
     }
     
     @FXML
-    private void handleModifyProductButtonClick(ActionEvent event) {
-        System.out.println("Modify Product Button Clicked");
+    private void handleModifyProductButtonClick(ActionEvent event) throws IOException {
+        try {
+            if(productsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a product to do that!");
+            } 
+            
+            Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
+            
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/ModifyProductScreen.fxml"));
+            loader.load();
+            
+            ModifyProductScreenController modProdController = loader.getController();
+            modProdController.setData(inventory, selectedProduct);
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+            
+            
+        } catch(NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Product Selected");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
     
     @FXML
