@@ -5,6 +5,7 @@
  */
 package controller;
 
+import exceptions.IncorrectValueException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -136,7 +137,63 @@ public class ModifyProductScreenController implements Initializable {
     }
 
     @FXML
-    private void handleSaveBtnClick(ActionEvent event) {
+    private void handleSaveBtnClick(ActionEvent event) throws IOException {
+        int id, stock, min, max;
+        String name;
+        double price;
+        
+        try {
+            id = Integer.parseInt(productIdField.getText());
+            stock = Integer.parseInt(productStockField.getText());
+            min = Integer.parseInt(productMinField.getText());
+            max = Integer.parseInt(productMaxField.getText());
+            name = productNameField.getText();
+            price = Double.parseDouble(productPriceField.getText());
+            
+            if(max < min) {
+                throw new IncorrectValueException("Max cannot be less than Min");
+            }
+            
+            if(stock < min || stock > max) {
+                throw new IncorrectValueException("Stock must be between Min and Max");
+            }
+            
+            Product updatedProduct = new Product(id, name, price, stock, min, max);
+            for(Part part : associatedPartsTable.getItems()) {
+                updatedProduct.addAssociatedPart(part);
+            }
+            
+            inventory.updateProduct(inventory.indexOfProduct(this.selectedProduct), updatedProduct);
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Product Updated");
+            alert.setContentText("Product \"" + name + "\" was successfully saved");
+            alert.showAndWait();
+            
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
+            loader.load();
+            
+            InventoryScreenController invController = loader.getController();
+            invController.setData(inventory);
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+            
+            
+        } catch(NullPointerException | NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("You must enter valid values in all fields.");
+            alert.showAndWait();
+        } catch(IncorrectValueException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML

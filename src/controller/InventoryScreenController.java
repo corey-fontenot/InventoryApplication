@@ -7,6 +7,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -19,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -126,9 +128,13 @@ public class InventoryScreenController implements Initializable {
             confirmDialog.setContentText(
                 "Are you sure you want to permanently delete \"" + temp.getName() + 
                  "\" from Inventory? This action cannot be undone");
-            confirmDialog.showAndWait();
 
-            inventory.deletePart(temp);
+            Optional<ButtonType> result = confirmDialog.showAndWait();
+            
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+                inventory.deletePart(temp);
+            }
+            
         } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Error");
@@ -211,9 +217,12 @@ public class InventoryScreenController implements Initializable {
             confirmDialog.setContentText(
                 "Are you sure you want to permanently delete \"" + selectedProduct.getName() + 
                 "\" from Inventory? This action cannot be undone");
-            confirmDialog.showAndWait();
             
-            inventory.deleteProduct(selectedProduct);
+            Optional<ButtonType> result = confirmDialog.showAndWait();
+            
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+                inventory.deleteProduct(selectedProduct);
+            }
             
         } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
