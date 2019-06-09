@@ -5,16 +5,27 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.Inventory;
 import model.Part;
 import model.Product;
@@ -76,14 +87,52 @@ public class ModifyProductScreenController implements Initializable {
 
     @FXML
     private void handleSearchBtnClick(ActionEvent event) {
+        String searchText = partSearchField.getText();
+        ObservableList<Part> result;
+        try {
+            result = inventory.lookupPart(Integer.parseInt(searchText));
+            
+        } catch(NumberFormatException e) {
+            result = inventory.lookupPart(searchText);
+        } 
+        
+        allPartsTable.setItems(result);
     }
 
     @FXML
     private void handleAddBtnClick(ActionEvent event) {
+        try {
+            if(allPartsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a part to do that!");
+            }
+            
+            Part selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
+            
+            selectedProduct.addAssociatedPart(selectedPart);
+        } catch(NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No part selected");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleDeleteBtnClick(ActionEvent event) {
+        try {
+            if(associatedPartsTable.getSelectionModel().isEmpty()) {
+                throw new NullPointerException("You must select a part to do that!");
+            }
+            
+            Part selectedPart = associatedPartsTable.getSelectionModel().getSelectedItem();
+            
+            selectedProduct.deleteAssociatedPart(selectedPart);
+            
+        } catch(NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No part selected");
+            alert.setContentText(e.getMessage());
+        }
     }
 
     @FXML
@@ -91,12 +140,55 @@ public class ModifyProductScreenController implements Initializable {
     }
 
     @FXML
-    private void handleCancelBtnClick(ActionEvent event) {
+    private void handleCancelBtnClick(ActionEvent event) throws IOException {
+        Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirmation");
+        confirmDialog.setContentText(
+            "Are you sure you want to Cancel? All progress will be lost");
+        
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        
+        if(result.isPresent() && result.get() == ButtonType.OK) {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
+            loader.load();
+            
+            InventoryScreenController inventoryController = loader.getController();
+            inventoryController.setData(inventory);
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+        
+        }
     }
     
     public void setData(Inventory inventory, Product product) {
         this.inventory = inventory;
         this.selectedProduct = product;
+        
+        // Populate All Parts Table
+        allPartsTable.setItems(inventory.getAllParts());
+        allPartsIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        allPartsNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        allPartsStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        allPartsPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        // Populate Associated Parts Table
+        associatedPartsTable.setItems(selectedProduct.getAllAssociatedParts());
+        associatedPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        associatedPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        associatedPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        associatedPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        // populate text fields
+        productIdField.setText(Integer.toString(selectedProduct.getId()));
+        productNameField.setText(selectedProduct.getName());
+        productStockField.setText(Integer.toString(selectedProduct.getStock()));
+        productMinField.setText(Integer.toString(selectedProduct.getMin()));
+        productMaxField.setText(Integer.toString(selectedProduct.getMax()));
+        productPriceField.setText(Double.toString(selectedProduct.getPrice()));
     }
     
 }
