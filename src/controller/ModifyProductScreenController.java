@@ -92,6 +92,13 @@ public class ModifyProductScreenController implements Initializable {
         ObservableList<Part> result;
         try {
             result = inventory.lookupPart(Integer.parseInt(searchText));
+            ObservableList<Part> nameResults = inventory.lookupPart(searchText);
+            
+            for(Part part : nameResults) {
+                if(!result.contains(part)) {
+                    result.add(part);
+                }
+            }
             
         } catch(NumberFormatException e) {
             result = inventory.lookupPart(searchText);
@@ -129,10 +136,13 @@ public class ModifyProductScreenController implements Initializable {
             
             selectedProduct.deleteAssociatedPart(selectedPart);
             
+            associatedPartsTable.setItems(selectedProduct.getAllAssociatedParts());
+            
         } catch(NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No part selected");
             alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 

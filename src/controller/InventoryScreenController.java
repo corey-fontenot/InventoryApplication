@@ -135,6 +135,10 @@ public class InventoryScreenController implements Initializable {
                 inventory.deletePart(temp);
             }
             
+            partSearchField.setText("");
+            
+            partsTable.setItems(inventory.getAllParts());
+            
         } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Error");
@@ -150,6 +154,14 @@ public class InventoryScreenController implements Initializable {
         
         try {
             results = inventory.lookupPart(Integer.parseInt(searchText));
+            ObservableList<Part> nameResults = inventory.lookupPart(searchText);
+            
+            for(Part part : nameResults) {
+                if(!results.contains(part)) {
+                    results.add(part);
+                }
+            }
+            
         } catch(NumberFormatException e) {
             results = inventory.lookupPart(searchText);
         }
@@ -224,6 +236,9 @@ public class InventoryScreenController implements Initializable {
                 inventory.deleteProduct(selectedProduct);
             }
             
+            productsTable.setItems(inventory.getAllProducts());
+            productSearchField.setText("");
+            
         } catch(NullPointerException e) {
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Error");
@@ -239,6 +254,13 @@ public class InventoryScreenController implements Initializable {
         
         try {
             results = inventory.lookupProduct(Integer.parseInt(searchText));
+            ObservableList<Product> nameResults = inventory.lookupProduct(searchText);
+            
+            for(Product product : nameResults) {
+                if(!results.contains(product)) {
+                    results.add(product);
+                }
+            }
         } catch(NumberFormatException e) {
             results = inventory.lookupProduct(searchText);
         }

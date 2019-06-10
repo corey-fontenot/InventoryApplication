@@ -94,6 +94,13 @@ public class AddProductScreenController implements Initializable {
         
         try {
             results = inventory.lookupPart(Integer.parseInt(searchText));
+            ObservableList<Part> nameResults = inventory.lookupPart(searchText);
+            
+            for(Part part : nameResults) {
+                if(!results.contains(part)) {
+                    results.add(part);
+                }
+            }
         } catch(NumberFormatException e) {
             results = inventory.lookupPart(searchText);
         }
@@ -129,6 +136,8 @@ public class AddProductScreenController implements Initializable {
             Part selectedPart = associatedPartsTable.getSelectionModel().getSelectedItem();
             
             associatedParts.remove(selectedPart);
+            
+            allPartsTable.setItems(inventory.getAllParts());
             
         } catch(NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
