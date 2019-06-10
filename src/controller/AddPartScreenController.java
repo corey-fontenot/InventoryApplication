@@ -33,7 +33,7 @@ import model.Part;
 /**
  * FXML Controller class
  *
- * @author Corey
+ * @author Corey Fontenot
  */
 public class AddPartScreenController implements Initializable {
     
@@ -69,13 +69,22 @@ public class AddPartScreenController implements Initializable {
         // TODO
     }    
     
+    /**
+     *  get inventory instance from previous screen
+     * @param inventory inventory instance
+     */
     public void setData(Inventory inventory) {
         this.inventory = inventory;
     }
     
+    /**
+     * calculates next auto generated part ID
+     * @return the next part ID
+     */
     private int nextPartId() {
         int max = 0;
         
+        // determine highest value of part IDs in inventory
         for(Part part : inventory.getAllParts()) {
             if(part.getId() > max) {
                 max = part.getId();

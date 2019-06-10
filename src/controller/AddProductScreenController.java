@@ -35,7 +35,7 @@ import model.Product;
 /**
  * FXML Controller class
  *
- * @author Corey
+ * @author Corey Fontenot
  */
 public class AddProductScreenController implements Initializable {
     
@@ -93,28 +93,42 @@ public class AddProductScreenController implements Initializable {
         ObservableList<Part> results;
         
         try {
+            // id results
             results = inventory.lookupPart(Integer.parseInt(searchText));
+            
+            // name results
             ObservableList<Part> nameResults = inventory.lookupPart(searchText);
             
+            /*
+                If a result from the name lookup is not already in the results
+                list from the id lookup then add it to the results list
+            */
             for(Part part : nameResults) {
                 if(!results.contains(part)) {
                     results.add(part);
                 }
             }
         } catch(NumberFormatException e) {
+            /*
+                if search text does not contain only integers then search
+                only based on name field
+            */
             results = inventory.lookupPart(searchText);
         }
         
+        // populate "All Parts" table with search results
         allPartsTable.setItems(results);
     }
 
     @FXML
     private void handleAddBtnClick(ActionEvent event) throws IOException {
         try {
+            // check if "All Parts" table contains any items
             if(allPartsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
             
+            // add selected part to the "All Parts" table
             Part selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
             associatedParts.add(selectedPart);
             
@@ -129,14 +143,16 @@ public class AddProductScreenController implements Initializable {
     @FXML
     private void handleDeleteBtnClick(ActionEvent event) throws IOException {
         try {
+            // check if a part was selected
             if(associatedPartsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
             
+            // remove selected part from the list
             Part selectedPart = associatedPartsTable.getSelectionModel().getSelectedItem();
-            
             associatedParts.remove(selectedPart);
             
+            // reset "All Parts" table in case table is populated with search results
             allPartsTable.setItems(inventory.getAllParts());
             
         } catch(NullPointerException e) {
@@ -161,40 +177,48 @@ public class AddProductScreenController implements Initializable {
             min = Integer.parseInt(productMinField.getText());
             max = Integer.parseInt(productMaxField.getText());
             
+            // make sure max is greater than min
             if(max < min) {
                 throw new IncorrectValueException("Max cannot be less than Min");
             }
             
+            // make sure stock is between min and max
             if(stock < min || stock > max) {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
+            // make sure "Associated Parts" table has at least one part
             if(associatedPartsTable.getItems().isEmpty()) {
                 throw new IncorrectValueException("A product must have at least one part");
             }
             
+            // get total cost of items in "Associated Parts" table
             double totalCost = 0;
             for(Part part : associatedPartsTable.getItems()) {
                 totalCost += part.getPrice();
             }
             
+            // make sure cost of all parts is less than price of product
             if(price < totalCost) {
                 throw new IncorrectValueException("Product price must be more than the cost of all associated parts");
             }
             
+            // add all associated parts to the product instance
             Product addedProduct = new Product(id, name, price, stock, min, max);
-            
             associatedPartsTable.getItems().forEach((part) -> {
                 addedProduct.addAssociatedPart(part);
             });
             
+            // add product instance to inventory
             inventory.addProduct(addedProduct);
             
+            // alert user that product was saved
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Product Saved");
             alert.setContentText("Product \"" + name + "\" was successfully saved.");
             alert.showAndWait();
             
+            // load inventory screen
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
             loader.load();
@@ -222,13 +246,16 @@ public class AddProductScreenController implements Initializable {
 
     @FXML
     private void handleCancelBtnClick(ActionEvent event) throws IOException {
+        // ask user to confirm that they want to cancel
         Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmDialog.setTitle("Confirmation");
         confirmDialog.setContentText(
             "Are you sure you want to Cancel? All progress will be lost");
         
+        // get result of confirm dialog
         Optional<ButtonType> result = confirmDialog.showAndWait();
         
+        // if user clicks OK, load inventory screen
         if(result.isPresent() && result.get() == ButtonType.OK) {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
@@ -244,6 +271,10 @@ public class AddProductScreenController implements Initializable {
         }
     }
     
+    /**
+     * get inventory instance and populate tables
+     * @param inventory 
+     */
     public void setData(Inventory inventory) {
         this.inventory = inventory;
         
@@ -264,9 +295,14 @@ public class AddProductScreenController implements Initializable {
         associatedPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
     
+    /**
+     * calculate next auto generated product id
+     * @return next product id
+     */
     private int nextProductId() {
         int max = 1;
         
+        // calculate highest product id in inventory
         for(Product product : inventory.getAllProducts()) {
             if(product.getId() > max) {
                 max = product.getId();

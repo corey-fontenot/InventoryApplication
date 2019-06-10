@@ -91,9 +91,13 @@ public class ModifyProductScreenController implements Initializable {
         String searchText = partSearchField.getText();
         ObservableList<Part> result;
         try {
+            // result of part id lookup
             result = inventory.lookupPart(Integer.parseInt(searchText));
+            
+            // result of part name lookup
             ObservableList<Part> nameResults = inventory.lookupPart(searchText);
             
+            // if part name result already in results list, add it
             for(Part part : nameResults) {
                 if(!result.contains(part)) {
                     result.add(part);
@@ -104,18 +108,20 @@ public class ModifyProductScreenController implements Initializable {
             result = inventory.lookupPart(searchText);
         } 
         
+        // populate "All Parts" table with search result
         allPartsTable.setItems(result);
     }
 
     @FXML
     private void handleAddBtnClick(ActionEvent event) {
         try {
+            // makes sure a part was selected
             if(allPartsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
             
+            // get selected part and add it to the "Associated Parts" table
             Part selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
-            
             selectedProduct.addAssociatedPart(selectedPart);
         } catch(NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -128,12 +134,13 @@ public class ModifyProductScreenController implements Initializable {
     @FXML
     private void handleDeleteBtnClick(ActionEvent event) {
         try {
+            // make sure a part was selected
             if(associatedPartsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
             
+            // get selected part and remove it from the "Associated Parts" table
             Part selectedPart = associatedPartsTable.getSelectionModel().getSelectedItem();
-            
             selectedProduct.deleteAssociatedPart(selectedPart);
             
             associatedPartsTable.setItems(selectedProduct.getAllAssociatedParts());
@@ -160,39 +167,48 @@ public class ModifyProductScreenController implements Initializable {
             name = productNameField.getText();
             price = Double.parseDouble(productPriceField.getText());
             
+            // make sure max is greater than min
             if(max < min) {
                 throw new IncorrectValueException("Max cannot be less than Min");
             }
             
+            // make sure stock is between min and max
             if(stock < min || stock > max) {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
+            // make sure product has at least one associated part
             if(associatedPartsTable.getItems().isEmpty()) {
                 throw new IncorrectValueException("Product must have at least one part");
             }
             
+            // calculat total cost of associated parts
             double partsSum = 0;
             for(Part part : associatedPartsTable.getItems()) {
                 partsSum += part.getPrice();
             }
             
+            // make sure product price is more than cost of associated parts
             if(price < partsSum) {
                 throw new IncorrectValueException("Product price must be more than cost of all parts");
             }
             
+            // create product instance and add associated parts to it
             Product updatedProduct = new Product(id, name, price, stock, min, max);
             for(Part part : associatedPartsTable.getItems()) {
                 updatedProduct.addAssociatedPart(part);
             }
             
+            // update invntory with modified product
             inventory.updateProduct(inventory.indexOfProduct(this.selectedProduct), updatedProduct);
             
+            // alert user that product was updated
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Product Updated");
             alert.setContentText("Product \"" + name + "\" was successfully saved");
             alert.showAndWait();
             
+            // load inventory screen
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
             loader.load();
@@ -221,13 +237,16 @@ public class ModifyProductScreenController implements Initializable {
 
     @FXML
     private void handleCancelBtnClick(ActionEvent event) throws IOException {
+        // ask user to confirm that they want to cancel
         Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmDialog.setTitle("Confirmation");
         confirmDialog.setContentText(
             "Are you sure you want to Cancel? All progress will be lost");
         
+        // result of confirm dialog
         Optional<ButtonType> result = confirmDialog.showAndWait();
         
+        // if user clicked OK, load inventory screen
         if(result.isPresent() && result.get() == ButtonType.OK) {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
@@ -244,6 +263,11 @@ public class ModifyProductScreenController implements Initializable {
         }
     }
     
+    /**
+     * load data from previous screen
+     * @param inventory inventory instance
+     * @param product selected part from previous screen
+     */
     public void setData(Inventory inventory, Product product) {
         this.inventory = inventory;
         this.selectedProduct = product;

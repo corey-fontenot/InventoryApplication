@@ -70,10 +70,16 @@ public class ModifyPartScreenController implements Initializable {
         // TODO
     }
     
+    /**
+     * get data from previous screen
+     * @param inventory inventory instance
+     * @param part part selected on previous screen
+     */
     public void setData(Inventory inventory, Part part) {
         this.inventory = inventory;
         this.part = part;
         
+        // populate fields with selected part's data
         partIdField.setText(Integer.toString(part.getId()));
         partNameField.setText(part.getName());
         partStockField.setText(Integer.toString(part.getStock()));
@@ -81,6 +87,7 @@ public class ModifyPartScreenController implements Initializable {
         partMaxField.setText(Integer.toString(part.getMax()));
         partMinField.setText(Integer.toString(part.getMin()));
         
+        // determine if part is inHouse or outsourced; set values accordingly
         if(part instanceof InHouse) {
             partProductionField.setText(Integer.toString(((InHouse) part).getMachineId()));
             inHouseRadio.setSelected(true);
@@ -92,6 +99,7 @@ public class ModifyPartScreenController implements Initializable {
 
     @FXML
     private void handleRadioButton(ActionEvent event) {
+        // show appropriate label and prompt text based on RadioButton selection
         if(inHouseRadio.isSelected()) {
             companyLabel.setVisible(false);
             machineLabel.setVisible(true);
@@ -117,14 +125,17 @@ public class ModifyPartScreenController implements Initializable {
             min = Integer.parseInt(partMinField.getText());
             max = Integer.parseInt(partMaxField.getText());
             
+            // make sure max is greater than min
             if(max < min) {
                 throw new IncorrectValueException("Max cannot be less than Min");
             }
             
+            // make sure stock is between min and max
             if(stock < min || stock > max) {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
+            // create appropriate part based on RadioButton selection
             if(inHouseRadio.isSelected()) {
                 machineId = Integer.parseInt(partProductionField.getText());
                 InHouse updatedPart = new InHouse(id, name, price, stock, min, max, machineId);
@@ -139,12 +150,14 @@ public class ModifyPartScreenController implements Initializable {
                 }
             }
             
+            // alert user that part was saved
             Alert infoDialog = new Alert(Alert.AlertType.INFORMATION);
             infoDialog.setTitle("Part Saved");
             infoDialog.setContentText(
                 "\"" + name + "\" was successfully saved");
             infoDialog.showAndWait();
             
+            // load inventory screen
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));
             loader.load();
@@ -173,13 +186,16 @@ public class ModifyPartScreenController implements Initializable {
 
     @FXML
     private void handleCancelButtonClick(ActionEvent event) throws IOException {
+        // ask user to confirm that they want to cancel
         Alert  confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmDialog.setTitle("Confirmation");
         confirmDialog.setContentText(
             "Are you sure you want to Cancel? All progress will be lost");
         
+        // result of confirm dialog
         Optional<ButtonType> result = confirmDialog.showAndWait();
         
+        // if user clicks OK load inventory screen
         if(result.isPresent() && result.get() == ButtonType.OK) {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/InventoryScreen.fxml"));

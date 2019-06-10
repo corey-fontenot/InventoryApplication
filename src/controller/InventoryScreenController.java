@@ -75,6 +75,7 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleAddPartButtonClick(ActionEvent event) throws IOException {
+        // load "Add Part" screen
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/view/AddPartScreen.fxml"));
         loader.load();
@@ -91,10 +92,12 @@ public class InventoryScreenController implements Initializable {
     @FXML
     private void handleModifyPartButtonClick(ActionEvent event) throws IOException{
         try {
+            // make sure a part was selected
             if(partsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
             
+            // load modify part screen
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/view/ModifyPartScreen.fxml"));
             loader.load();
@@ -117,26 +120,31 @@ public class InventoryScreenController implements Initializable {
     @FXML
     private void handleDeletePartButtonClick(ActionEvent event) {
         try {
+            // make sure a part was selected
             if(partsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a part to do that!");
             }
 
+            // get selected part
             Part temp = (Part) partsTable.getSelectionModel().getSelectedItem();
 
+            // ask user to confirm that they want to delete the part
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDialog.setTitle("Confirm Delete");
             confirmDialog.setContentText(
                 "Are you sure you want to permanently delete \"" + temp.getName() + 
                  "\" from Inventory? This action cannot be undone");
 
+            // result of confirm dialog
             Optional<ButtonType> result = confirmDialog.showAndWait();
             
+            // if user clicked OK remove part from inventory
             if(result.isPresent() && result.get() == ButtonType.OK) {
                 inventory.deletePart(temp);
             }
             
+            // reset part table in case it was populated by a search operation
             partSearchField.setText("");
-            
             partsTable.setItems(inventory.getAllParts());
             
         } catch(NullPointerException e) {
@@ -153,9 +161,13 @@ public class InventoryScreenController implements Initializable {
         ObservableList<Part> results;
         
         try {
+            // id lookup results
             results = inventory.lookupPart(Integer.parseInt(searchText));
+            
+            // name lookup results
             ObservableList<Part> nameResults = inventory.lookupPart(searchText);
             
+           // if part from name search is not already in the result list, add it
             for(Part part : nameResults) {
                 if(!results.contains(part)) {
                     results.add(part);
@@ -172,6 +184,7 @@ public class InventoryScreenController implements Initializable {
     
     @FXML
     private void handleAddProductButtonClick(ActionEvent event) throws IOException{
+        // load "Add Product" screen
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/view/AddProductScreen.fxml"));
         loader.load();
@@ -188,10 +201,12 @@ public class InventoryScreenController implements Initializable {
     @FXML
     private void handleModifyProductButtonClick(ActionEvent event) throws IOException {
         try {
+            // make sure a product was selected
             if(productsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a product to do that!");
             } 
             
+            // get selected product and send it and inventory instance to "Modify Part" screen
             Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
             
             FXMLLoader loader = new FXMLLoader();
@@ -218,24 +233,29 @@ public class InventoryScreenController implements Initializable {
     @FXML
     private void handleDeleteProductButtonClick(ActionEvent event) {
         try {
+            // make sure a product was selected
             if(productsTable.getSelectionModel().isEmpty()) {
                 throw new NullPointerException("You must select a product to do that!");
             }
             
             Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem();
             
+            // ask user to confirm delete operation
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDialog.setTitle("Confirm Delete");
             confirmDialog.setContentText(
                 "Are you sure you want to permanently delete \"" + selectedProduct.getName() + 
                 "\" from Inventory? This action cannot be undone");
             
+            // confirm dialog result
             Optional<ButtonType> result = confirmDialog.showAndWait();
             
+            // if user clicks OK delete the selected part
             if(result.isPresent() && result.get() == ButtonType.OK) {
                 inventory.deleteProduct(selectedProduct);
             }
             
+            // reset products table in case search operation was performed
             productsTable.setItems(inventory.getAllProducts());
             productSearchField.setText("");
             
@@ -253,9 +273,13 @@ public class InventoryScreenController implements Initializable {
         ObservableList<Product> results;
         
         try {
+            // product id results
             results = inventory.lookupProduct(Integer.parseInt(searchText));
+            
+            // product name results
             ObservableList<Product> nameResults = inventory.lookupProduct(searchText);
             
+            // if name lookup results are not already in results list, add them
             for(Product product : nameResults) {
                 if(!results.contains(product)) {
                     results.add(product);
@@ -269,6 +293,10 @@ public class InventoryScreenController implements Initializable {
         productsTable.setItems(results);
     }
     
+    /**
+     * get data from previous screen
+     * @param inventory inventory instance
+     */
     public void setData(Inventory inventory) {
         this.inventory = inventory;
         
