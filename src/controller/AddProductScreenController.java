@@ -169,8 +169,17 @@ public class AddProductScreenController implements Initializable {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
-            if(associatedParts.isEmpty()) {
-                throw new IncorrectValueException("Product must have at least one associated part");
+            if(associatedPartsTable.getItems().isEmpty()) {
+                throw new IncorrectValueException("A product must have at least one part");
+            }
+            
+            double totalCost = 0;
+            for(Part part : associatedPartsTable.getItems()) {
+                totalCost += part.getPrice();
+            }
+            
+            if(price < totalCost) {
+                throw new IncorrectValueException("Product price must be more than the cost of all associated parts");
             }
             
             Product addedProduct = new Product(id, name, price, stock, min, max);
@@ -207,6 +216,7 @@ public class AddProductScreenController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 

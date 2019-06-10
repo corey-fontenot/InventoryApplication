@@ -172,6 +172,15 @@ public class ModifyProductScreenController implements Initializable {
                 throw new IncorrectValueException("Product must have at least one part");
             }
             
+            double partsSum = 0;
+            for(Part part : associatedPartsTable.getItems()) {
+                partsSum += part.getPrice();
+            }
+            
+            if(price < partsSum) {
+                throw new IncorrectValueException("Product price must be more than cost of all parts");
+            }
+            
             Product updatedProduct = new Product(id, name, price, stock, min, max);
             for(Part part : associatedPartsTable.getItems()) {
                 updatedProduct.addAssociatedPart(part);
