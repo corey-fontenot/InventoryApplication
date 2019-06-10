@@ -169,6 +169,10 @@ public class AddProductScreenController implements Initializable {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
+            if(associatedParts.isEmpty()) {
+                throw new IncorrectValueException("Product must have at least one associated part");
+            }
+            
             Product addedProduct = new Product(id, name, price, stock, min, max);
             
             associatedPartsTable.getItems().forEach((part) -> {

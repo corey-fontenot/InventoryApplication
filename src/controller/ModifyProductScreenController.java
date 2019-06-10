@@ -168,6 +168,10 @@ public class ModifyProductScreenController implements Initializable {
                 throw new IncorrectValueException("Stock must be between Min and Max");
             }
             
+            if(associatedPartsTable.getItems().isEmpty()) {
+                throw new IncorrectValueException("Product must have at least one part");
+            }
+            
             Product updatedProduct = new Product(id, name, price, stock, min, max);
             for(Part part : associatedPartsTable.getItems()) {
                 updatedProduct.addAssociatedPart(part);

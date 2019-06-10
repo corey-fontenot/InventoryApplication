@@ -51,9 +51,18 @@ public class InventoryApplication extends Application {
         temp.addPart(new Outsourced(6, "Part 6", 3.99, 17, 5, 20, "Company 1"));
         temp.addPart(new Outsourced(11, "Part 11", 7.49, 15, 10, 25, "Company 2"));
         
-        temp.addProduct(new Product(1, "Product 1", 14.99, 8, 5, 15));
-        temp.addProduct(new Product(2, "Product 2", 19.99, 23, 10, 25));
-        temp.addProduct(new Product(3, "Product 3", 27.99, 7, 5, 20));
+        Product prod1 = new Product(1, "Product 1", 14.99, 8, 5, 15);
+        prod1.addAssociatedPart(temp.getAllParts().get(3));
+        
+        Product prod2 = new Product(2, "Product 2", 19.99, 23, 10, 25);
+        prod2.addAssociatedPart(temp.getAllParts().get(6));
+        
+        Product prod3 = new Product(3, "Product 3", 27.99, 7, 5, 20);
+        prod3.addAssociatedPart(temp.getAllParts().get(6));
+        
+        temp.addProduct(prod1);
+        temp.addProduct(prod2);
+        temp.addProduct(prod3);
         
         return temp;
     }
